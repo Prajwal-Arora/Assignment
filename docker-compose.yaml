@@ -1,0 +1,89 @@
+version: '3.9'
+services:
+  api_svc:
+    container_name: api-svc
+    image: api-svc:latest
+    build:
+      context: ./api-svc/.
+      args:
+        NODE_ENV: development
+    ports:
+      - '3001:3001'
+    networks:
+      - mobi
+    env_file:
+      - ./api-svc/src/config/.env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: always
+
+  # log_svc:
+  #   container_name: log-svc
+  #   image: log-svc:latest
+  #   build:
+  #     context: ./log-svc/.
+  #     args:
+  #       NODE_ENV: development
+  #   ports:
+  #     - '3002:3002'
+  #   networks:
+  #     - mobi
+  #   env_file:
+  #     - ./log-svc/src/config/.env
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   restart: always
+
+  mongo_db:
+    container_name: mongo-db
+    image: 'mongo:latest'
+    restart: always
+    networks:
+      - mobi
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data:/data/db
+
+  mongo_express:
+    container_name: mongo-express
+    image: 'mongo-express:latest'
+    restart: always
+    networks:
+      - mobi
+    ports:
+      - 8080:8080
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongo_db:27017/
+
+  redis_db:
+    container_name: redis-db
+    image: 'redis:alpine'
+    restart: always
+    networks:
+      - mobi
+    ports:
+      - '6379:6379'
+
+  rabbitmq:
+    container_name: rabbitmq
+    hostname: rabbitmq
+    build: ./rabbitmq-dockerfile
+    networks:
+      - mobi
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://rabbitmq:15672']
+      interval: 10s
+      timeout: 10s
+      retries: 2
+    ports:
+      - '5672:5672'
+      - '15672:15672'
+    volumes:
+      - ./rabbitmq/data/:/var/lib/rabbitmq/
+      - ./rabbitmq/log/:/var/log/rabbitmq
+
+networks:
+  mobi:
