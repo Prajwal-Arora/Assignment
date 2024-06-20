@@ -1,5 +1,5 @@
-import { config } from '../config';
+import { env } from '../config';
 
 export const dbConnection = {
-  url: config.MONGODB_CONNECTION_STRING,
+  url: env.MONGODB_CONNECTION_STRING,
 };

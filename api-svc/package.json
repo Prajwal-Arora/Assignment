@@ -44,6 +44,7 @@
     "tsc-alias": "^1.8.10",
     "typescript": "^5.4.5",
     "tslib": "2.6.3",
+    "dotenv": "16.4.5",
     "ts-node-dev": "^2.0.0"
   },
   "devDependencies": {

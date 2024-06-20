@@ -1,3 +1,4 @@
+import 'express-async-errors';
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
@@ -5,7 +6,7 @@ import { connect } from 'mongoose';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import rateLimit from 'express-rate-limit';
-import { config } from './config';
+import { env } from './config';
 import { dbConnection } from './databases';
 import { Routes } from './interfaces/routes.interface';
 import errorMiddleware from './middlewares/error.middleware';
@@ -16,7 +17,7 @@ class App {
 
   constructor(routes: Routes[]) {
     this.app = express();
-    this.port = config.PORT;
+    this.port = env.PORT;
 
     this.connectToDatabase();
     this.initializeMiddlewares();
