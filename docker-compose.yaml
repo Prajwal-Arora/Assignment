@@ -54,9 +54,11 @@ services:
     networks:
       - mobi
     ports:
-      - 8080:8080
+      - 8081:8081
     environment:
       ME_CONFIG_MONGODB_URL: mongodb://mongo_db:27017/
+    depends_on:
+      - mongo_db
 
   redis_db:
     container_name: redis-db

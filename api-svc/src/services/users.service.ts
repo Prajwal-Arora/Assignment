@@ -1,0 +1,79 @@
+import { UserI } from '../interfaces/users.interface';
+import { User } from '../models/user.model';
+import { validateUserParams } from '../utils/validator';
+import { HttpException } from '../exceptions/HttpException';
+import { hash } from 'bcrypt';
+
+class UserService {
+  public async createUser(userData: UserI): Promise<UserI> {
+    const { error } = validateUserParams(userData);
+    if (error) throw new HttpException(400, error.details[0].message);
+
+    const checkExistingUser = await User.findOne({ email: userData.email });
+    if (checkExistingUser) {
+      throw new HttpException(409, 'Email already exists');
+    }
+
+    const hashedPassword = await hash(userData.password, 10);
+    const user = await User.create({
+      email: userData.email,
+      password: hashedPassword,
+    });
+
+    return user;
+  }
+
+  public async getUserById(userId: string): Promise<UserI> {
+    const findUser = await User.findOne({ _id: userId });
+    if (!findUser) throw new HttpException(409, "User doesn't exist");
+    return findUser;
+  }
+
+  public async updateUser(userId: string, userData: UserI): Promise<UserI> {
+    const { error } = validateUserParams(userData);
+    if (error) throw new HttpException(400, error.details[0].message);
+
+    const findUser = await User.findOne({ email: userData.email });
+    if (findUser && findUser._id !== userId)
+      throw new HttpException(409, 'Email already exists');
+
+    const updatedUser = await User.findByIdAndUpdate(userId, {
+      email: userData.email,
+    });
+    if (!updatedUser) throw new HttpException(409, "User doesn't exist");
+
+    return updatedUser;
+  }
+
+  public async deleteUser(userId: string): Promise<UserI> {
+    const deleteUserById = await User.findByIdAndDelete(userId);
+    if (!deleteUserById) throw new HttpException(409, "User doesn't exist");
+
+    return deleteUserById;
+  }
+
+  public async getAllUsers(
+    pageString: string,
+    limitString: string
+  ): Promise<{
+    users: UserI[];
+    pagination: any;
+  }> {
+    const page = parseInt(pageString) || 1;
+    const limit = parseInt(limitString) || 10;
+    const skip = (page - 1) * limit;
+
+    const users = await User.find().skip(skip).limit(limit);
+    const total = await User.countDocuments();
+
+    const pagination = {
+      page: page,
+      pages: Math.ceil(total / limit),
+      total: total,
+    };
+
+    return { users, pagination };
+  }
+}
+
+export default UserService;

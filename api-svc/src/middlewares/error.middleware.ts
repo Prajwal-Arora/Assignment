@@ -19,4 +19,4 @@ const errorMiddleware = (
   }
 };
 
-export default errorMiddleware;
+export { errorMiddleware };

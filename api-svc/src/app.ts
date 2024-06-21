@@ -1,15 +1,14 @@
 import 'express-async-errors';
 import cors from 'cors';
-import express from 'express';
+import express, { Request, Response } from 'express';
 import helmet from 'helmet';
 import { connect } from 'mongoose';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import rateLimit from 'express-rate-limit';
 import { env } from './config';
-import { dbConnection } from './databases';
 import { Routes } from './interfaces/routes.interface';
-import errorMiddleware from './middlewares/error.middleware';
+import { errorMiddleware } from './middlewares/error.middleware';
 
 class App {
   public app: express.Application;
@@ -28,18 +27,16 @@ class App {
 
   public listen() {
     this.app.listen(this.port, () => {
-      console.info(`=================================`);
-      console.info(`🚀 App listening on the port ${this.port}`);
-      console.info(`=================================`);
+      console.log(`=================================`);
+      console.log(`🚀 App listening on the port ${this.port}`);
+      console.log(`=================================`);
     });
   }
 
-  public getServer() {
-    return this.app;
-  }
-
   private connectToDatabase() {
-    connect(dbConnection.url);
+    connect(env.MONGODB_CONNECTION_STRING).then(() => {
+      console.log('Connected to database ✅');
+    });
   }
 
   private initializeMiddlewares() {
@@ -61,6 +58,9 @@ class App {
   private initializeRoutes(routes: Routes[]) {
     routes.forEach((route) => {
       this.app.use('/', route.router);
+    });
+    this.app.get('/healthcheck', (req: Request, res: Response) => {
+      res.json({ message: 'hello' });
     });
   }
 
