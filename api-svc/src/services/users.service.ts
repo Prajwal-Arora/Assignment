@@ -4,6 +4,8 @@ import { validateUserParams } from '../utils/validator';
 import { HttpException } from '../exceptions/HttpException';
 import { hash } from 'bcrypt';
 import { publishMessage } from '../rabbitmq/publisher';
+import { getCachedData, setCachedData, deleteCachedData } from '../utils/redis';
+const CACHE_DURATION = 160;
 
 class UserService {
   public async createUser(userData: UserI): Promise<UserI> {
@@ -31,8 +33,13 @@ class UserService {
   }
 
   public async getUserById(userId: string): Promise<UserI> {
+    const cachedUser = await getCachedData(`user:${userId}`);
+    if (cachedUser) {
+      return cachedUser;
+    }
     const findUser = await User.findOne({ _id: userId });
     if (!findUser) throw new HttpException(409, "User doesn't exist");
+    await setCachedData(`user:${userId}`, findUser, CACHE_DURATION);
     return findUser;
   }
 
@@ -55,6 +62,8 @@ class UserService {
       console.error(err);
     });
 
+    await deleteCachedData(`user:${userId}`);
+
     return updatedUser;
   }
 
@@ -67,6 +76,8 @@ class UserService {
     }).catch((err) => {
       console.error(err);
     });
+
+    await deleteCachedData(`user:${userId}`);
 
     return deleteUserById;
   }
@@ -82,6 +93,12 @@ class UserService {
     const limit = parseInt(limitString) || 10;
     const skip = (page - 1) * limit;
 
+    const cacheKey = `users:page:${page}:limit:${limit}`;
+    const data = await getCachedData(cacheKey);
+    if (data) {
+      return data;
+    }
+
     const users = await User.find().skip(skip).limit(limit);
     const total = await User.countDocuments();
 
@@ -90,6 +107,8 @@ class UserService {
       pages: Math.ceil(total / limit),
       total: total,
     };
+
+    await setCachedData(cacheKey, { users, pagination }, CACHE_DURATION);
 
     return { users, pagination };
   }
