@@ -18,23 +18,23 @@ services:
         condition: service_healthy
     restart: always
 
-  # log_svc:
-  #   container_name: log-svc
-  #   image: log-svc:latest
-  #   build:
-  #     context: ./log-svc/.
-  #     args:
-  #       NODE_ENV: development
-  #   ports:
-  #     - '3002:3002'
-  #   networks:
-  #     - mobi
-  #   env_file:
-  #     - ./log-svc/src/config/.env
-  #   depends_on:
-  #     rabbitmq:
-  #       condition: service_healthy
-  #   restart: always
+  log_svc:
+    container_name: log-svc
+    image: log-svc:latest
+    build:
+      context: ./log-svc/.
+      args:
+        NODE_ENV: development
+    ports:
+      - '3002:3002'
+    networks:
+      - mobi
+    env_file:
+      - ./log-svc/src/config/.env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    restart: always
 
   mongo_db:
     container_name: mongo-db

@@ -3,6 +3,7 @@ import { User } from '../models/user.model';
 import { validateUserParams } from '../utils/validator';
 import { HttpException } from '../exceptions/HttpException';
 import { hash } from 'bcrypt';
+import { publishMessage } from '../rabbitmq/publisher';
 
 class UserService {
   public async createUser(userData: UserI): Promise<UserI> {
@@ -19,6 +20,12 @@ class UserService {
       email: userData.email,
       password: hashedPassword,
     });
+
+    publishMessage({ data: `user created - ${userData.email}` }).catch(
+      (err) => {
+        console.error(err);
+      }
+    );
 
     return user;
   }
@@ -42,12 +49,24 @@ class UserService {
     });
     if (!updatedUser) throw new HttpException(409, "User doesn't exist");
 
+    publishMessage({
+      data: `${updatedUser.id} user updated to - ${userData.email}`,
+    }).catch((err) => {
+      console.error(err);
+    });
+
     return updatedUser;
   }
 
   public async deleteUser(userId: string): Promise<UserI> {
     const deleteUserById = await User.findByIdAndDelete(userId);
     if (!deleteUserById) throw new HttpException(409, "User doesn't exist");
+
+    publishMessage({
+      data: `user deleted - ${userId}`,
+    }).catch((err) => {
+      console.error(err);
+    });
 
     return deleteUserById;
   }
