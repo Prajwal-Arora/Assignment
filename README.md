@@ -3,10 +3,10 @@
  ![Architecture](screenshots/arch.png)
  
 #### Workflow Summary
-Request Handling: The client sends a request to the server.
-Data Fetching: The server first attempts to retrieve the data from Redis. If the data is not found in the cache, it fetches it from MongoDB.
-Messaging: After processing the request, the server sends a message to RabbitMQ to notify other components or services about the action performed or the data update.
-Asynchronous Processing: RabbitMQ routes the message to the intended recipient for further actions (i.e. in this case its a simple `console.log` in `log-svc`), ensuring decoupled and asynchronous communication.
+- Request Handling: The client sends a request to the server.
+- Data Fetching: The server first attempts to retrieve the data from Redis. If the data is not found in the cache, it fetches it from MongoDB.
+- Messaging: After processing the request, the server sends a message to RabbitMQ to notify other components or services about the action performed or the data update.
+- Asynchronous Processing: RabbitMQ routes the message to the intended recipient for further actions (i.e. in this case its a simple `console.log` in `log-svc`), ensuring decoupled and asynchronous communication.
 
 #### Steps to Deploy on your Local
 > download or git clone the repository
