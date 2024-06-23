@@ -30,37 +30,37 @@ AMQP_URL=amqp://rabbitmq
 `docker compose logs -f --tail=20`
 
 Following image is what you should see in your terminal when you run the above command
- ![docker logs img](screenshots/logs)
+ ![docker logs img](screenshots/logs.png)
  
  Logs can also be seen in docker Desktop, simply click any container running in the container section
  attaching image for refrence
-  ![docker desktop 1](screenshots/one)
-  ![docker desktop 2](screenshots/two)
+  ![docker desktop 1](screenshots/one.png)
+  ![docker desktop 2](screenshots/two.png)
    
  #### Performance / Load testing of APIs
  
  Please check this report - [https://gh879tsd67tjb.s3.ap-south-1.amazonaws.com/report.pdf](https://gh879tsd67tjb.s3.ap-south-1.amazonaws.com/report.pdf)
  
  The performance of APIs was done using postman by running the collection in peak mode
- ![performance](screenshots/perf)
+ ![performance](screenshots/perf.png)
 
  #### Status of unit test
- ![unit test output](screenshots/test)
+ ![unit test output](screenshots/test.png)
  
  #### Deployment to AWS
  An `Nginx` reverse proxy has been setup on an AWS EC2 t2.medium instance allows you to forward traffic from port 80 (HTTP) to port 3001, where your application is running. This configuration helps mask the internal port, enhance security, and enable easier access for users through a standard web port.
  
  Attaching images for running apis after deployment using server public IP
- ![postman api using server ip](screenshots/post1)
- ![postman api using server ip](screenshots/post2)
- ![postman api using server ip](screenshots/post3)
+ ![postman api using server ip](screenshots/post1.png)
+ ![postman api using server ip](screenshots/post2.png)
+ ![postman api using server ip](screenshots/post3.png)
  
  #### Accessing Swagger on local
  Open this URL in your browser after deploying the application
  > http://localhost:3001/api-docs
  
  You should see something like this -
- ![swagger image](screenshots/swagger1)
- ![swagger image](screenshots/swagger2)
- ![swagger image](screenshots/swagger3)
- ![swagger image](screenshots/swagger4)
+ ![swagger image](screenshots/swagger1.png)
+ ![swagger image](screenshots/swagger2.png)
+ ![swagger image](screenshots/swagger3.png)
+ ![swagger image](screenshots/swagger4.png)
