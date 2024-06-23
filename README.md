@@ -67,6 +67,8 @@ Following image is what you should see in your terminal when you run the above c
 
  #### Deployment on AWS
 
+ - Assuming you have already launched an EC2 on aws with inbound traffic on port 80 open for all IPs, lets follow the steps below
+
 - Using SFTP send the repository codebase to your server
 `sftp -i "<path to pem>" <server hostname>@<server ip>`
 ` > put <codebase>.zip`
