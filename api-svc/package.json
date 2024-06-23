@@ -9,9 +9,14 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "setupFilesAfterEnv": [
-      "./src/test/setup.ts"
-    ]
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "tsconfig.json"
+      },
+      "setupFiles": [
+        "./src/test/setup.test.ts"
+      ]
+    }
   },
   "repository": {
     "type": "git",
@@ -64,6 +69,7 @@
     "@types/supertest": "^2.0.12",
     "@types/swagger-jsdoc": "^6.0.1",
     "@types/swagger-ui-express": "^4.1.3",
-    "@types/amqplib": "0.10.5"
+    "@types/amqplib": "0.10.5",
+    "@jest/globals": "29.7.0"
   }
 }
