@@ -67,20 +67,20 @@ Following image is what you should see in your terminal when you run the above c
 
  #### Deployment on AWS
 
-> Using SFTP send the repository codebase to your server
+- Using SFTP send the repository codebase to your server
 `sftp -i "<path to pem>" <server hostname>@<server ip>`
 ` > put <codebase>.zip`
-> SSH into your server using the pem file
+- SSH into your server using the pem file
 `ssh -i "<path to pem>" <server hostname>@<server ip>`
-> Install ubuntu packages nginx, docker, zip
+- Install ubuntu packages nginx, docker, zip
 Nginx - `sudo apt install nginx`
 zip - `sudo apt install zip`
 docker- `wget -O - https://raw.githubusercontent.com/shivamgrover/docker-install.sh/main/dockerinstall_new.sh | bash`
-> Unzip the application codebase
+- Unzip the application codebase
 `unzip <codebase>.zip`
-> Lets setup nginx now
+- Lets setup nginx now
 `sudo vi /etc/nginx/sites-available/myapp`
-> add the following code and press !wq to exit the vi editor
+- add the following code and press !wq to exit the vi editor
 ```
 server {
     listen 80;
@@ -96,9 +96,9 @@ server {
     }
   }
 ```
-> Run the following command
+- Run the following command
 `sudo ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/`
-> Then run this command
+- Then run this command
 `sudo systemctl restart nginx`
-> Nginx has been started, now simply run the application using docker using this command inside the codebase directory
+- Nginx has been started, now simply run the application using docker using this command inside the codebase directory
 `sudo docker compose up -d`
