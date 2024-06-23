@@ -9,6 +9,7 @@ import rateLimit from 'express-rate-limit';
 import { env } from './config';
 import { Routes } from './interfaces/routes.interface';
 import { errorMiddleware } from './middlewares/error.middleware';
+import path from 'path';
 
 class App {
   public app: express.Application;
@@ -67,22 +68,20 @@ class App {
   private initializeSwagger() {
     const options = {
       swaggerDefinition: {
+        openapi: '3.0.0',
         info: {
-          title: 'REST API',
+          title: 'User Management API',
           version: '1.0.0',
-          description: 'Example docs',
+          description: 'API for managing users',
         },
-        components: {
-          securitySchemes: {
-            bearerAuth: {
-              type: 'http',
-              scheme: 'bearer',
-              bearerFormat: 'JWT',
-            },
+        servers: [
+          {
+            url: 'http://localhost:3001',
+            description: 'Local server',
           },
-        },
+        ],
       },
-      apis: ['swagger.yaml'],
+      apis: [path.join(__dirname, 'swagger.yaml')],
     };
 
     const specs = swaggerJSDoc(options);
