@@ -64,3 +64,41 @@ Following image is what you should see in your terminal when you run the above c
  ![swagger image](screenshots/swagger2.png)
  ![swagger image](screenshots/swagger3.png)
  ![swagger image](screenshots/swagger4.png)
+
+ #### Deployment on AWS
+
+> Using SFTP send the repository codebase to your server
+`sftp -i "<path to pem>" <server hostname>@<server ip>`
+` > put <codebase>.zip`
+> SSH into your server using the pem file
+`ssh -i "<path to pem>" <server hostname>@<server ip>`
+> Install ubuntu packages nginx, docker, zip
+Nginx - `sudo apt install nginx`
+zip - `sudo apt install zip`
+docker- `wget -O - https://raw.githubusercontent.com/shivamgrover/docker-install.sh/main/dockerinstall_new.sh | bash`
+> Unzip the application codebase
+`unzip <codebase>.zip`
+> Lets setup nginx now
+`sudo vi /etc/nginx/sites-available/myapp`
+> add the following code and press !wq to exit the vi editor
+```
+server {
+    listen 80;
+    server_name <add server ip here>;
+
+    location / {
+        proxy_pass http://localhost:3001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+  }
+```
+> Run the following command
+`sudo ln -s /etc/nginx/sites-available/myapp /etc/nginx/sites-enabled/`
+> Then run this command
+`sudo systemctl restart nginx`
+> Nginx has been started, now simply run the application using docker using this command inside the codebase directory
+`sudo docker compose up -d`
